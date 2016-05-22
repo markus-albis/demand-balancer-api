@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="demand_balancerModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="ProductCode" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="DiePerWafer" Type="int" />
+          <Property Name="FGS" Type="int" />
+          <Property Name="AverageDemand" Type="int" />
+        </EntityType>
+        <EntityType Name="ProductDemand">
+          <Key>
+            <PropertyRef Name="ProductDemandId" />
+          </Key>
+          <Property Name="ProductDemandId" Type="int" Nullable="false" />
+          <Property Name="Demand" Type="int" />
+          <Property Name="WeekId" Type="int" />
+          <Property Name="ProductId" Type="int" />
+        </EntityType>
+        <EntityType Name="RCDemand">
+          <Key>
+            <PropertyRef Name="RCDemandId" />
+          </Key>
+          <Property Name="RCDemandId" Type="int" Nullable="false" />
+          <Property Name="Demand" Type="double" />
+          <Property Name="WeekId" Type="int" />
+          <Property Name="RCItemId" Type="int" />
+        </EntityType>
+        <EntityType Name="RCItem">
+          <Key>
+            <PropertyRef Name="RCItemId" />
+          </Key>
+          <Property Name="RCItemId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="Capacity" Type="double" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SummaryItem">
+          <Key>
+            <PropertyRef Name="SummaryItemId" />
+          </Key>
+          <Property Name="SummaryItemId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="45" />
+          <Property Name="Rule" Type="varchar" MaxLength="45" />
+          <Property Name="Limit" Type="double" />
+        </EntityType>
+        <Association Name="fk_MTODemand_Product1">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductDemand" Type="Self.ProductDemand" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductDemand">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_RCDemand_RCItem1">
+          <End Role="RCItem" Type="Self.RCItem" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="RCDemand" Type="Self.RCDemand" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RCItem">
+              <PropertyRef Name="RCItemId" />
+            </Principal>
+            <Dependent Role="RCDemand">
+              <PropertyRef Name="RCItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="demand_balancerModelStoreContainer">
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="demand_balancer" store:Type="Tables" />
+          <EntitySet Name="ProductDemand" EntityType="Self.ProductDemand" Schema="demand_balancer" store:Type="Tables" />
+          <EntitySet Name="RCDemand" EntityType="Self.RCDemand" Schema="demand_balancer" store:Type="Tables" />
+          <EntitySet Name="RCItem" EntityType="Self.RCItem" Schema="demand_balancer" store:Type="Tables" />
+          <EntitySet Name="SummaryItem" EntityType="Self.SummaryItem" Schema="demand_balancer" store:Type="Tables" />
+          <AssociationSet Name="fk_MTODemand_Product1" Association="Self.fk_MTODemand_Product1">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="ProductDemand" EntitySet="ProductDemand" />
+          </AssociationSet>
+          <AssociationSet Name="fk_RCDemand_RCItem1" Association="Self.fk_RCDemand_RCItem1">
+            <End Role="RCItem" EntitySet="RCItem" />
+            <End Role="RCDemand" EntitySet="RCDemand" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="demand_balancerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ProductCode" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DiePerWafer" Type="Int32" />
+          <Property Name="FGS" Type="Int32" />
+          <Property Name="AverageDemand" Type="Int32" />
+          <NavigationProperty Name="ProductDemands" Relationship="Self.fk_MTODemand_Product1" FromRole="Product" ToRole="ProductDemand" />
+        </EntityType>
+        <EntityType Name="ProductDemand">
+          <Key>
+            <PropertyRef Name="ProductDemandId" />
+          </Key>
+          <Property Name="ProductDemandId" Type="Int32" Nullable="false" />
+          <Property Name="Demand" Type="Int32" />
+          <Property Name="WeekId" Type="Int32" />
+          <Property Name="ProductId" Type="Int32" />
+          <NavigationProperty Name="Product" Relationship="Self.fk_MTODemand_Product1" FromRole="ProductDemand" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="RCDemand">
+          <Key>
+            <PropertyRef Name="RCDemandId" />
+          </Key>
+          <Property Name="RCDemandId" Type="Int32" Nullable="false" />
+          <Property Name="Demand" Type="Double" />
+          <Property Name="WeekId" Type="Int32" />
+          <Property Name="RCItemId" Type="Int32" />
+          <NavigationProperty Name="RCItem" Relationship="Self.fk_RCDemand_RCItem1" FromRole="RCDemand" ToRole="RCItem" />
+        </EntityType>
+        <EntityType Name="RCItem">
+          <Key>
+            <PropertyRef Name="RCItemId" />
+          </Key>
+          <Property Name="RCItemId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Capacity" Type="Double" Nullable="false" />
+          <NavigationProperty Name="RCDemands" Relationship="Self.fk_RCDemand_RCItem1" FromRole="RCItem" ToRole="RCDemand" />
+        </EntityType>
+        <Association Name="fk_MTODemand_Product1">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductDemand" Type="Self.ProductDemand" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductDemand">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_RCDemand_RCItem1">
+          <End Role="RCItem" Type="Self.RCItem" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="RCDemand" Type="Self.RCDemand" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RCItem">
+              <PropertyRef Name="RCItemId" />
+            </Principal>
+            <Dependent Role="RCDemand">
+              <PropertyRef Name="RCItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="dbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Products" EntityType="Self.Product" />
+          <EntitySet Name="ProductDemands" EntityType="Self.ProductDemand" />
+          <EntitySet Name="RCDemands" EntityType="Self.RCDemand" />
+          <EntitySet Name="RCItems" EntityType="Self.RCItem" />
+          <AssociationSet Name="fk_MTODemand_Product1" Association="Self.fk_MTODemand_Product1">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductDemand" EntitySet="ProductDemands" />
+          </AssociationSet>
+          <AssociationSet Name="fk_RCDemand_RCItem1" Association="Self.fk_RCDemand_RCItem1">
+            <End Role="RCItem" EntitySet="RCItems" />
+            <End Role="RCDemand" EntitySet="RCDemands" />
+          </AssociationSet>
+          <EntitySet Name="SummaryItems" EntityType="demand_balancerModel.SummaryItem" />
+        </EntityContainer>
+        <EntityType Name="SummaryItem">
+          <Key>
+            <PropertyRef Name="SummaryItemId" />
+          </Key>
+          <Property Name="SummaryItemId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Rule" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Limit" Type="Double" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="demand_balancerModelStoreContainer" CdmEntityContainer="dbEntities">
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="demand_balancerModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="ProductCode" ColumnName="ProductCode" />
+                <ScalarProperty Name="DiePerWafer" ColumnName="DiePerWafer" />
+                <ScalarProperty Name="FGS" ColumnName="FGS" />
+                <ScalarProperty Name="AverageDemand" ColumnName="AverageDemand" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductDemands">
+            <EntityTypeMapping TypeName="demand_balancerModel.ProductDemand">
+              <MappingFragment StoreEntitySet="ProductDemand">
+                <ScalarProperty Name="ProductDemandId" ColumnName="ProductDemandId" />
+                <ScalarProperty Name="Demand" ColumnName="Demand" />
+                <ScalarProperty Name="WeekId" ColumnName="WeekId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RCDemands">
+            <EntityTypeMapping TypeName="demand_balancerModel.RCDemand">
+              <MappingFragment StoreEntitySet="RCDemand">
+                <ScalarProperty Name="RCDemandId" ColumnName="RCDemandId" />
+                <ScalarProperty Name="Demand" ColumnName="Demand" />
+                <ScalarProperty Name="WeekId" ColumnName="WeekId" />
+                <ScalarProperty Name="RCItemId" ColumnName="RCItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RCItems">
+            <EntityTypeMapping TypeName="demand_balancerModel.RCItem">
+              <MappingFragment StoreEntitySet="RCItem">
+                <ScalarProperty Name="RCItemId" ColumnName="RCItemId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Capacity" ColumnName="Capacity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SummaryItems">
+            <EntityTypeMapping TypeName="demand_balancerModel.SummaryItem">
+              <MappingFragment StoreEntitySet="SummaryItem">
+                <ScalarProperty Name="Limit" ColumnName="Limit" />
+                <ScalarProperty Name="Rule" ColumnName="Rule" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="SummaryItemId" ColumnName="SummaryItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
